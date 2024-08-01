@@ -9,6 +9,9 @@ Objetivo: Desarrollar un sistema para manejar productos en un inventario.
 4. Manejar errores con bloques try-except para validar entradas y gestionar excepciones.
 5. Persistir los datos en archivo JSON.
 '''
+# Librerías necesarias
+import json
+
 
 class Producto():
     def __init__(self, codigo, nombre, costo, precio, cantidad) -> None:
@@ -18,7 +21,7 @@ class Producto():
         self.__precio = self.validar_precio(precio)
         self.__cantidad = self.validar_cantidad(cantidad)
 
-    #Getters
+    ##Getters
     @property
     def codigo(self):
         return self.__codigo
@@ -39,7 +42,7 @@ class Producto():
     def cantidad(self):
         return self.__cantidad
     
-    #Setters
+    ##Setters
     @codigo.setter
     def codigo(self):
         pass
@@ -110,7 +113,7 @@ class ProductoElectronico(Producto):
         super().__init__(codigo, nombre, costo, precio, cantidad)
         self.__categoria = categoria
 
-    #Getters
+    ##Getters
     @property
     def categoria(self):
         return self.__categoria
@@ -129,7 +132,7 @@ class ProductoAlimenticio(Producto):
         super().__init__(codigo, nombre, costo, precio, cantidad)
         self.__vencimiento = vencimiento
 
-    #Getters
+    ##Getters
     @property
     def vencimiento(self):
         return self.__vencimiento
@@ -141,4 +144,52 @@ class ProductoAlimenticio(Producto):
         return data
     
     def __str__(self) -> str:
-        return f'{super().__str__()} - vencimiento: {self.vencimiento}' 
+        return f'{super().__str__()} - vencimiento: {self.vencimiento}'
+
+#Gestion
+class GestionProductos():
+    def __init__(self, archivo) -> None:
+        self.archivo = archivo
+    
+    def leer_datos(self):
+        '''
+        Trae los datos del JSON
+        '''
+        try:
+            with open(self.archivo, 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            return {}
+        except Exception as e:
+            raise Exception(f'Error al leer datos del archivo: {e}')
+        else:
+            return data
+        
+    def guardar_datos(self, data):
+        try:
+            with open(self.archivo, 'w') as file:
+                json.dump(data, file, indent=4)
+        except IOError as e:
+            print(f'Error al intentar guardar los datos en {self.archivo} - error: {e}')
+        except Exception as e:
+            print(f'Error inesperado: {e}')
+    
+    def crear_producto(self, producto):
+        '''
+        Este método va a recibir una instancia de Producto cuando llamemos desde main.py. Es decir, recibirá un input desde el usuario
+        Dicha instancia será un producto electrónico o alimenticio
+        Ese objeto con esos datos pasa a este método para crear el producto
+        En resumen: el parámetro producto del método es a su vez una instancia de las subclases
+        '''
+        try:
+            datos = self.leer_datos() ### Lee todo lo que contiene el JSON en ese momento
+            codigo = producto.codigo ### Validacion con DNI
+            if not str(codigo) in datos.keys(): ### Si no existe en datos, se crea
+                datos[codigo] = producto.to_dict() ### Trae todos los campos de la instancia de la subclase
+                self.guardar_datos(datos) ### Todos los datos junto con lo que agregamos ahora
+                print(f'Guardado exitoso')
+            else:
+                print(f'{producto.codigo} ya existente')
+        except Exception as e:
+            print(f'Error inesperado al crear colaborador: {e}')
+
