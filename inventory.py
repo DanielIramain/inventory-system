@@ -104,3 +104,41 @@ class Producto():
 
     def __str__(self) -> str:
         return f'{self.codigo} {self.nombre}'
+    
+class ProductoElectronico(Producto):
+    def __init__(self, codigo, nombre, costo, precio, cantidad, categoria) -> None:
+        super().__init__(codigo, nombre, costo, precio, cantidad)
+        self.__categoria = categoria
+
+    #Getters
+    @property
+    def categoria(self):
+        return self.__categoria
+    
+    def to_dict(self):
+        data = super().to_dict()
+        data['categoria'] = self.categoria
+        
+        return data
+    
+    def __str__(self) -> str:
+        return f'{super().__str__()} - categoria: {self.categoria}'
+    
+class ProductoAlimenticio(Producto):
+    def __init__(self, codigo, nombre, costo, precio, cantidad, vencimiento) -> None:
+        super().__init__(codigo, nombre, costo, precio, cantidad)
+        self.__vencimiento = vencimiento
+
+    #Getters
+    @property
+    def vencimiento(self):
+        return self.__vencimiento
+        
+    def to_dict(self):
+        data = super().to_dict()
+        data['vencimiento'] = self.vencimiento
+        
+        return data
+    
+    def __str__(self) -> str:
+        return f'{super().__str__()} - vencimiento: {self.vencimiento}' 
