@@ -48,17 +48,24 @@ def agregar_producto(gestion: GestionProductos, tipo_producto):
         print(f'Error: {e}')
     except Exception as e:
         print(f'Error inesperado: {e}')
+    
+def buscar_producto_por_codigo(gestion: GestionProductos):
+    codigo = input('Ingrese el codigo del producto a buscar: ')
+    gestion.leer_producto(codigo)
+    input('Presione una tecla para continuar...')
 
 
 if __name__ == '__main__':
     archivo_productos = 'productos_db.json'
-    gestion_colaboradores = GestionProductos(archivo_productos) # Instancia de la clase que implementa el CRUD (la búsqueda en JSON)
+    gestion_productos = GestionProductos(archivo_productos) # Instancia de la clase que implementa el CRUD (la búsqueda en JSON)
 
     while True:
         mostrar_menu()
         opcion = input('Seleccione una opción: ')
 
         if opcion == '1' or opcion == '2':
-            agregar_producto(gestion_colaboradores, opcion)
+            agregar_producto(gestion_productos, opcion)
+        if opcion == '3':
+            buscar_producto_por_codigo(gestion_productos)
         else:
             print('Opcion no válida. Seleccione una opción válida (1-7)')

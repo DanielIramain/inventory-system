@@ -194,7 +194,24 @@ class GestionProductos():
             print(f'Error inesperado al crear colaborador: {e}')
     
     def leer_producto(self, codigo):
-        pass
+        '''
+        Método para buscar producto por código
+        Lee los datos (del JSON) y busca una key con ese codigo
+        Si la encuentra, crea una variable para guardar los datos 
+        Evalua si está presente categoria, si es así, crea una 
+        instancia de ProductoElectronico, de lo contrario es una instancia
+        de ProductoAlimenticio
+        '''
+        data = self.leer_datos()
+        if codigo in data:
+            producto_data = data[codigo]
+            if 'categoria' in producto_data:
+                producto = ProductoElectronico(**producto_data) ##Desempaquetador (es un diccionario)
+            else:
+                producto = ProductoAlimenticio(**producto_data)
+            print(f'Producto encontrado con codigo: {codigo}')
+        else:
+            print(f'Producto no encontrado con el código: {codigo}')
 
     def actualizar_producto(self, codigo, nuevo_costo, nuevo_precio, nueva_cantidad):
         pass
