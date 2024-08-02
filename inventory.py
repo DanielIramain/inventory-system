@@ -233,4 +233,18 @@ class GestionProductos():
             print(f'Error al actualizar el producto: {e}')
 
     def eliminar_producto(self, codigo):
-        pass
+        '''
+        Método para eliminar un producto por código
+        Si existe el mismo, accedemos a los datos y 
+        eliminamos el producto para luego guardar.
+        '''
+        try:
+            datos = self.leer_datos()
+            if str(codigo) in datos.keys():
+                del datos[codigo] # Elimina el objeto del espacio en memoria de JSON 
+                self.guardar_datos(datos) # Para que persista debemos guardar los datos
+                print(f'Producto de código {codigo} borrado correctamente')
+            else:
+                print(f'No se encontró el producto con código: {codigo}')
+        except Exception as e:
+            print(f'Error al eliminar el producto: {e}')

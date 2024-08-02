@@ -62,6 +62,11 @@ def actualizar_producto_por_codigo(gestion: GestionProductos):
     gestion.actualizar_producto(codigo, costo, precio, cantidad)
     input('Presione una tecla para continuar...')
 
+def eliminar_producto_por_codigo(gestion: GestionProductos):
+    codigo = input('Ingrese el codigo del colaborador a eliminar: ')
+    gestion.eliminar_producto(codigo)
+    input('Presione una tecla para continuar...')
+
 if __name__ == '__main__':
     archivo_productos = 'productos_db.json'
     gestion_productos = GestionProductos(archivo_productos) # Instancia de la clase que implementa el CRUD (la búsqueda en JSON)
@@ -76,5 +81,7 @@ if __name__ == '__main__':
             buscar_producto_por_codigo(gestion_productos)
         if opcion == '4':
             actualizar_producto_por_codigo(gestion_productos)
+        if opcion == '5':
+            eliminar_producto_por_codigo(gestion_productos)
         else:
             print('Opcion no válida. Seleccione una opción válida (1-7)')

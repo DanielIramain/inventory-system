@@ -1,12 +1,4 @@
 {
-    "12345": {
-        "codigo": 12345,
-        "nombre": "Celular samsung",
-        "costo": 600.0,
-        "precio": 1100.0,
-        "cantidad": 2,
-        "categoria": "Celulares"
-    },
     "67890": {
         "codigo": 67890,
         "nombre": "Zanahoria feliz",
