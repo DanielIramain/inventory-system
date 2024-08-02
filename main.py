@@ -17,15 +17,15 @@ def mostrar_menu():
 
 def agregar_producto(gestion: GestionProductos, tipo_producto):
     '''
-    Recibe una instancia de colaborador 
-    (necesitamos los datos del colaborador)
+    Recibe una instancia de producto
+    y los datos del producto
     '''
     try:
         codigo = int(input('Ingrese el codigo: '))
         nombre = input('Ingrese el nombre: ')
         costo = float(input('Ingrese el costo: '))
-        precio = float(input('Ingrese edad: '))
-        cantidad = int(input('Ingrese salario: '))
+        precio = float(input('Ingrese el precio: '))
+        cantidad = int(input('Ingrese la cantidad: '))
 
         if tipo_producto == '1':
             categoria = input('Ingrese categoria: ')
@@ -48,3 +48,17 @@ def agregar_producto(gestion: GestionProductos, tipo_producto):
         print(f'Error: {e}')
     except Exception as e:
         print(f'Error inesperado: {e}')
+
+
+if __name__ == '__main__':
+    archivo_productos = 'productos_db.json'
+    gestion_colaboradores = GestionProductos(archivo_productos) # Instancia de la clase que implementa el CRUD (la búsqueda en JSON)
+
+    while True:
+        mostrar_menu()
+        opcion = input('Seleccione una opción: ')
+
+        if opcion == '1' or opcion == '2':
+            agregar_producto(gestion_colaboradores, opcion)
+        else:
+            print('Opcion no válida. Seleccione una opción válida (1-7)')

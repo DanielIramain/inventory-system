@@ -183,7 +183,7 @@ class GestionProductos():
         '''
         try:
             datos = self.leer_datos() ### Lee todo lo que contiene el JSON en ese momento
-            codigo = producto.codigo ### Validacion con DNI
+            codigo = producto.codigo ### Validacion con codigo
             if not str(codigo) in datos.keys(): ### Si no existe en datos, se crea
                 datos[codigo] = producto.to_dict() ### Trae todos los campos de la instancia de la subclase
                 self.guardar_datos(datos) ### Todos los datos junto con lo que agregamos ahora
