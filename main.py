@@ -54,6 +54,13 @@ def buscar_producto_por_codigo(gestion: GestionProductos):
     gestion.leer_producto(codigo)
     input('Presione una tecla para continuar...')
 
+def actualizar_producto_por_codigo(gestion: GestionProductos):
+    codigo = input('Ingrese el código del producto a actualizar: ')
+    costo = float(input('Ingrese el nuevo costo del producto: '))
+    precio = float(input('Ingrese el nuevo precio del producto: '))
+    cantidad = int(input('Ingrese la nueva cantidad del producto: '))
+    gestion.actualizar_producto(codigo, costo, precio, cantidad)
+    input('Presione una tecla para continuar...')
 
 if __name__ == '__main__':
     archivo_productos = 'productos_db.json'
@@ -67,5 +74,7 @@ if __name__ == '__main__':
             agregar_producto(gestion_productos, opcion)
         if opcion == '3':
             buscar_producto_por_codigo(gestion_productos)
+        if opcion == '4':
+            actualizar_producto_por_codigo(gestion_productos)
         else:
             print('Opcion no válida. Seleccione una opción válida (1-7)')

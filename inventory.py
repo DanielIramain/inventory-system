@@ -214,8 +214,23 @@ class GestionProductos():
             print(f'Producto no encontrado con el código: {codigo}')
 
     def actualizar_producto(self, codigo, nuevo_costo, nuevo_precio, nueva_cantidad):
-        pass
+        '''
+        Método para modificar los datos de los productos
+        Si existe el codigo, accedemos a los datos 
+        y los sobreescribimos para luego guardarlos.
+        '''
+        try:
+            datos = self.leer_datos()
+            if str(codigo) in datos.keys():
+                datos[codigo]['costo'] = nuevo_costo
+                datos[codigo]['precio'] = nuevo_precio
+                datos[codigo]['cantidad'] = nueva_cantidad
+                self.guardar_datos(datos)
+                print(f'Datos actualizados correctamente para el producto {codigo}')
+            else:
+                print(f'No se encontró el producto {codigo}')
+        except Exception as e:
+            print(f'Error al actualizar el producto: {e}')
 
     def eliminar_producto(self, codigo):
         pass
-
