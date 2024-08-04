@@ -191,7 +191,7 @@ class GestionProductos():
             else:
                 print(f'{producto.codigo} ya existente')
         except Exception as e:
-            print(f'Error inesperado al crear colaborador: {e}')
+            print(f'Error inesperado al crear producto: {e}')
     
     def leer_producto(self, codigo):
         '''
