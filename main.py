@@ -75,7 +75,7 @@ def actualizar_producto_por_codigo(gestion: GestionProductos):
     input('Presione una tecla para continuar...')
 
 def eliminar_producto_por_codigo(gestion: GestionProductos):
-    codigo = input('Ingrese el codigo del colaborador a eliminar: ')
+    codigo = input('Ingrese el codigo del producto a eliminar: ')
     gestion.eliminar_producto(codigo)
     input('Presione una tecla para continuar...')
 
