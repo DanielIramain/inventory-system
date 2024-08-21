@@ -53,11 +53,11 @@ class Producto():
 
     @costo.setter
     def costo(self, nuevo_costo):
-        self.__costo = self.validad_costo(nuevo_costo)
+        self.__costo = self.validar_costo(nuevo_costo)
     
     @precio.setter
     def precio(self, nuevo_precio):
-        self.__precio = self.validad_precio(nuevo_precio)
+        self.__precio = self.validar_precio(nuevo_precio)
     
     @cantidad.setter
     def cantidad(self, nueva_cantidad):
@@ -81,9 +81,12 @@ class Producto():
             nuevo_nombre = str(nombre)
             if nuevo_nombre == '':
                 raise ValueError('El nombre no puede estar vacío')
+            
             return nuevo_nombre
         except ValueError:
             print('El nombre debe ser alfanumerico')
+
+            return nuevo_nombre
 
     def validar_costo(self, costo):
         try:
@@ -204,7 +207,12 @@ class GestionProductos():
         try:
             datos = self.leer_datos() ### Lee todo lo que contiene el JSON en ese momento
             codigo = producto.codigo ### Validacion con codigo
-            if not str(codigo) in datos.keys(): ### Si no existe en datos, se crea
+            nombre = producto.nombre
+            if nombre == '':
+                print('No puede guardarse un producto sin nombre')
+                
+                return
+            elif not str(codigo) in datos.keys(): ### Si no existe en datos, se crea
                 datos[codigo] = producto.to_dict() ### Trae todos los campos de la instancia de la subclase
                 self.guardar_datos(datos) ### Todos los datos junto con lo que agregamos ahora
                 print(f'Guardado exitoso')
