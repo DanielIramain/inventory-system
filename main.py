@@ -33,7 +33,7 @@ def agregar_producto(gestion: GestionProductos, tipo_producto):
     y los datos del producto
     '''
     try:
-        codigo = int(input('Ingrese el codigo: '))
+        codigo = input('Ingrese el codigo: ')
         nombre = input('Ingrese el nombre: ')
         costo = float(input('Ingrese el costo: '))
         precio = float(input('Ingrese el precio: '))

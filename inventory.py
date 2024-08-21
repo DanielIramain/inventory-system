@@ -12,11 +12,11 @@ Objetivo: Desarrollar un sistema para manejar productos en un inventario.
 # Librerías necesarias
 import json
 
-
+# Clase base
 class Producto():
     def __init__(self, codigo, nombre, costo, precio, cantidad) -> None:
-        self.__codigo = codigo
-        self.__nombre = nombre
+        self.__codigo = self.validar_codigo(codigo)
+        self.__nombre = self.validar_nombre(nombre)
         self.__costo = self.validar_costo(costo)
         self.__precio = self.validar_precio(precio)
         self.__cantidad = self.validar_cantidad(cantidad)
@@ -28,7 +28,7 @@ class Producto():
 
     @property
     def nombre(self):
-        return self.__nombre.capitalize()
+        return self.__nombre
     
     @property
     def costo(self):
@@ -44,16 +44,13 @@ class Producto():
     
     ##Setters
     @codigo.setter
-    def codigo(self):
-        pass
+    def codigo(self, nuevo_codigo):
+        self.__codigo = self.validar_codigo(nuevo_codigo)
 
     @nombre.setter
-    def nombre(self):
-        '''
-        No incluir nombres repetidos
-        '''
-        pass
-    
+    def nombre(self, nuevo_nombre):
+        self.__nombre = self.validar_nombre(nuevo_nombre)
+
     @costo.setter
     def costo(self, nuevo_costo):
         self.__costo = self.validad_costo(nuevo_costo)
@@ -65,6 +62,28 @@ class Producto():
     @cantidad.setter
     def cantidad(self, nueva_cantidad):
         self.__cantidad = self.validar_cantidad(nueva_cantidad)
+
+    def validar_codigo(self, codigo):
+        try:
+            nuevo_codigo = int(codigo)
+            if nuevo_codigo == '':
+                raise ValueError('El código del producto no puede estar vacío')
+            
+            return nuevo_codigo
+        except ValueError:
+            print('El código debe ser un número entero')
+            input('Presione enter para volver a intentarlo...')
+            
+            return nuevo_codigo
+    
+    def validar_nombre(self, nombre):
+        try:
+            nuevo_nombre = str(nombre)
+            if nuevo_nombre == '':
+                raise ValueError('El nombre no puede estar vacío')
+            return nuevo_nombre
+        except ValueError:
+            print('El nombre debe ser alfanumerico')
 
     def validar_costo(self, costo):
         try:
@@ -107,7 +126,8 @@ class Producto():
 
     def __str__(self) -> str:
         return f'{self.codigo} {self.nombre}'
-    
+
+# Clases derivadas
 class ProductoElectronico(Producto):
     def __init__(self, codigo, nombre, costo, precio, cantidad, categoria) -> None:
         super().__init__(codigo, nombre, costo, precio, cantidad)
@@ -146,7 +166,7 @@ class ProductoAlimenticio(Producto):
     def __str__(self) -> str:
         return f'{super().__str__()} - vencimiento: {self.vencimiento}'
 
-#Gestion
+# Clase de gestion
 class GestionProductos():
     def __init__(self, archivo) -> None:
         self.archivo = archivo
