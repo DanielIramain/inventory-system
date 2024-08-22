@@ -12,6 +12,10 @@ Objetivo: Desarrollar un sistema para manejar productos en un inventario.
 # Librerías necesarias
 import json
 
+import mysql.connector
+from mysql.connector import Error
+from decouple import config
+
 # Clase base
 class Producto():
     def __init__(self, codigo, nombre, costo, precio, cantidad) -> None:
@@ -171,9 +175,32 @@ class ProductoAlimenticio(Producto):
 
 # Clase de gestion
 class GestionProductos():
-    def __init__(self, archivo) -> None:
-        self.archivo = archivo
-    
+    def __init__(self) -> None:
+        self.host = config('DB_HOST')
+        self.name = config('DB_NAME')
+        self.user = config('DB_USER')
+        self.password = config('DB_PASS')
+        self.port = config('DB_PORT')
+
+    def connect(self):
+        '''
+        Establece la conexión con la BBDD
+        '''
+        try:
+            connection = mysql.connector.connect(
+                host = self.host,
+                database = self.name,
+                user = self.user,
+                password = self.password,
+                port = self.port
+            )
+
+            if connection.is_connected:
+                return connection
+        except Error as e:
+            print(f'Error al conectarse a la base de datos: {e}')
+            return None
+###
     def leer_datos(self):
         '''
         Trae los datos del JSON
@@ -196,28 +223,52 @@ class GestionProductos():
             print(f'Error al intentar guardar los datos en {self.archivo} - error: {e}')
         except Exception as e:
             print(f'Error inesperado: {e}')
-    
+###    
     def crear_producto(self, producto):
         '''
-        Este método va a recibir una instancia de Producto cuando llamemos desde main.py. Es decir, recibirá un input desde el usuario
+        Este método va a recibir una instancia de Producto cuando llamemos desde main.py. Es decir, recibirá un input del usuario
         Dicha instancia será un producto electrónico o alimenticio
-        Ese objeto con esos datos pasa a este método para crear el producto
-        En resumen: el parámetro producto del método es a su vez una instancia de las subclases
+        Ese objeto con esos datos pasa a este método para crear el producto en la BBDD
+        (El parámetro producto del método es a su vez una instancia de las subclases)
         '''
         try:
-            datos = self.leer_datos() ### Lee todo lo que contiene el JSON en ese momento
-            codigo = producto.codigo ### Validacion con codigo
-            nombre = producto.nombre
-            if nombre == '':
-                print('No puede guardarse un producto sin nombre')
-                
-                return
-            elif not str(codigo) in datos.keys(): ### Si no existe en datos, se crea
-                datos[codigo] = producto.to_dict() ### Trae todos los campos de la instancia de la subclase
-                self.guardar_datos(datos) ### Todos los datos junto con lo que agregamos ahora
-                print(f'Guardado exitoso')
-            else:
-                print(f'{producto.codigo} ya existente')
+            connection = self.connect()
+            if connection:
+                with connection.cursor() as cursor:
+                    ### Verificamos si existe el codigo
+                    cursor.execute('SELECT codigo FROM producto WHERE codigo = %s ', (producto.codigo,))
+                    
+                    if cursor.fetchone():
+                        print('Ya existe un producto con ese código')
+                        return
+                    
+                    ### Insertar producto
+                    query = '''
+                    INSERT INTO producto (codigo, nombre, costo, precio, cantidad) 
+                    VALUES (%s, %s, %s, %s, %s)
+                    '''
+                    cursor.execute(query, (producto.codigo, producto.nombre, producto.costo, producto.precio, producto.cantidad))
+
+                    ### Luego insertar producto por tipo
+                    if isinstance(producto, ProductoElectronico):
+                        query = '''
+                        INSERT INTO productoelectronico (codigo, categoria)
+                        VALUES (%s, %s)
+                        '''
+                    
+                        cursor.execute(query, (producto.codigo, producto.categoria))
+                    
+                    elif isinstance(producto, ProductoAlimenticio):
+                        query = '''
+                        INSERT INTO productoalimenticio(codigo, vencimiento)
+                        VALUES (%s, %s)
+                        '''
+
+                        cursor.execute(query, (producto.codigo, producto.vencimiento))
+                    
+                    ### Guardar cambios
+                    connection.commit()
+                    print(f'Producto {producto.nombre} creado exitosamente')
         except Exception as e:
             print(f'Error inesperado al crear producto: {e}')
     

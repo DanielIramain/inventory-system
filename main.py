@@ -90,8 +90,7 @@ def mostrar_todos_los_productos(gestion: GestionProductos):
     input('Presione una tecla para continuar')
 
 if __name__ == '__main__':
-    archivo_productos = 'productos_db.json'
-    gestion_productos = GestionProductos(archivo_productos) # Instancia de la clase que implementa el CRUD (la búsqueda en JSON)
+    gestion_productos = GestionProductos() ### Instancia de la clase que implementa el CRUD
 
     while True:
         limpiar_pantalla()
