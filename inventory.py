@@ -286,7 +286,7 @@ class GestionProductos():
                     if datos_producto:
                         cursor.execute('SELECT categoria FROM productoelectronico WHERE codigo = %s', (codigo,))
                         categoria = cursor.fetchone()
-    
+
                         if categoria: ### Si es un producto de tipo electronico
                             datos_producto['categoria'] = categoria['categoria'] ### Asigna el valor de categoria obtenido en fetch a una nueva key (categoria) en el dicc de datos_productos
                             producto = ProductoElectronico(**datos_producto)
@@ -298,9 +298,9 @@ class GestionProductos():
                                 producto = ProductoAlimenticio(**datos_producto)
                             else: ### Caso (hipotetico) donde no es electronico ni alimenticio
                                 producto = Producto(**datos_producto)
-                            
+
                         print(f'Producto encontrado: {producto.nombre}')
-    
+
                     else:
                         print(f'No se encontró ningún producto con el código ingresado')
         except Error as e:
@@ -311,22 +311,34 @@ class GestionProductos():
 
     def actualizar_producto(self, codigo, nuevo_costo, nuevo_precio, nueva_cantidad):
         '''
-        Método para modificar los datos de los productos
-        Si existe el codigo, accedemos a los datos 
-        y los sobreescribimos para luego guardarlos.
+        Modificar los datos de los productos en la BBDD
         '''
         try:
-            datos = self.leer_datos()
-            if str(codigo) in datos.keys():
-                datos[codigo]['costo'] = nuevo_costo
-                datos[codigo]['precio'] = nuevo_precio
-                datos[codigo]['cantidad'] = nueva_cantidad
-                self.guardar_datos(datos)
-                print(f'Datos actualizados correctamente para el producto {codigo}')
-            else:
-                print(f'No se encontró el producto {codigo}')
-        except Exception as e:
+            connection = self.connect()
+            if connection:
+                with connection.cursor() as cursor:
+                    ## Verificar si existe el código
+                    cursor.execute('SELECT * FROM producto WHERE codigo = %s', (codigo,))
+                    if not cursor.fetchone():
+                        print(f'Producto de código {codigo} inexistente')
+                        return
+                    
+                    ## Actualizar los datos si existe el código
+                    query = '''
+                    UPDATE producto SET costo = %s, precio = %s, cantidad = %s WHERE codigo = %s
+                    '''
+                    cursor.execute(query ,(nuevo_costo, nuevo_precio, nueva_cantidad, codigo))
+
+                    if cursor.rowcount > 0:
+                        connection.commit()
+                        print('Los datos se guardaron correctamente')
+                    else:
+                        print(f'No se encontró producto de código {codigo}')
+        except Error as e:
             print(f'Error al actualizar el producto: {e}')
+        finally:
+            if connection.is_connected():
+                connection.close()
 
     def eliminar_producto(self, codigo):
         '''
