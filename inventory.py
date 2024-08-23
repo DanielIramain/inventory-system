@@ -342,17 +342,30 @@ class GestionProductos():
 
     def eliminar_producto(self, codigo):
         '''
-        Método para eliminar un producto por código
-        Si existe el mismo, accedemos a los datos y 
-        eliminamos el producto para luego guardar.
+        Busca un producto por código
+        y lo elimina de la BBDD
         '''
         try:
-            datos = self.leer_datos()
-            if str(codigo) in datos.keys():
-                del datos[codigo] # Elimina el objeto del espacio en memoria de JSON 
-                self.guardar_datos(datos) # Para que persista debemos guardar los datos
-                print(f'Producto de código {codigo} borrado correctamente')
-            else:
-                print(f'No se encontró el producto con código: {codigo}')
+            connection = self.connect()
+            if connection:
+                with connection.cursor() as cursor:
+                   # Verificar si el producto con el dni ingresado existe
+                    cursor.execute('SELECT * FROM producto WHERE codigo = %s', (codigo,))
+                    if not cursor.fetchone():
+                        print(f'No se encontro producto con codigo {codigo}')
+                        return 
+
+                    # Eliminar el producto
+                    cursor.execute('DELETE FROM productoelectronico WHERE codigo = %s', (codigo,))
+                    cursor.execute('DELETE FROM productoalimenticio WHERE codigo = %s', (codigo,))
+                    cursor.execute('DELETE FROM producto WHERE codigo = %s', (codigo,))
+                    if cursor.rowcount > 0:
+                        connection.commit()
+                        print(f'Producto de codigo: {codigo} eliminado correctamente')
+                    else:
+                        print(f'No se encontró producto con codigo: {codigo}')
         except Exception as e:
             print(f'Error al eliminar el producto: {e}')
+        finally:
+            if connection.is_connected():
+                connection.close()
