@@ -274,23 +274,40 @@ class GestionProductos():
     
     def leer_producto(self, codigo):
         '''
-        Método para buscar producto por código
-        Lee los datos (del JSON) y busca una key con ese codigo
-        Si la encuentra, crea una variable para guardar los datos 
-        Evalua si está presente categoria, si es así, crea una 
-        instancia de ProductoElectronico, de lo contrario es una instancia
-        de ProductoAlimenticio
+        Buscar producto por código
         '''
-        data = self.leer_datos()
-        if codigo in data:
-            producto_data = data[codigo]
-            if 'categoria' in producto_data:
-                producto = ProductoElectronico(**producto_data) ##Desempaquetador (es un diccionario)
-            else:
-                producto = ProductoAlimenticio(**producto_data)
-            print(f'Producto encontrado con codigo: {codigo}')
-        else:
-            print(f'Producto no encontrado con el código: {codigo}')
+        try:
+            connection = self.connect()
+            if connection:
+                with connection.cursor(dictionary=True) as cursor: ### Con ese parametro en True devuelve las consultas en dicc.
+                    cursor.execute('SELECT * FROM producto WHERE codigo = %s', (codigo,))
+                    datos_producto = cursor.fetchone()
+                
+                    if datos_producto:
+                        cursor.execute('SELECT categoria FROM productoelectronico WHERE codigo = %s', (codigo,))
+                        categoria = cursor.fetchone()
+    
+                        if categoria: ### Si es un producto de tipo electronico
+                            datos_producto['categoria'] = categoria['categoria'] ### Asigna el valor de categoria obtenido en fetch a una nueva key (categoria) en el dicc de datos_productos
+                            producto = ProductoElectronico(**datos_producto)
+                        else: ### No es de tipo electronico si no alimenticio (no tiene categoría)
+                            cursor.execute('SELECT vencimiento FROM productoalimenticio WHERE codigo = %s', (codigo,))
+                            vencimiento = cursor.fetchone()
+                            if vencimiento:
+                                datos_producto['vencimiento'] = vencimiento['vencimiento']
+                                producto = ProductoAlimenticio(**datos_producto)
+                            else: ### Caso (hipotetico) donde no es electronico ni alimenticio
+                                producto = Producto(**datos_producto)
+                            
+                        print(f'Producto encontrado: {producto.nombre}')
+    
+                    else:
+                        print(f'No se encontró ningún producto con el código ingresado')
+        except Error as e:
+            print(f'Error al leer producto: {e}')
+        finally:
+            if connection.is_connected():
+                connection.close()
 
     def actualizar_producto(self, codigo, nuevo_costo, nuevo_precio, nueva_cantidad):
         '''
