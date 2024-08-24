@@ -369,3 +369,38 @@ class GestionProductos():
         finally:
             if connection.is_connected():
                 connection.close()
+
+    def leer_todos_los_productos(self):
+        try:
+            connection = self.connect()
+            if connection:
+                with connection.cursor(dictionary=True) as cursor:
+                    cursor.execute('SELECT * FROM producto')
+                    productos_data = cursor.fetchall()
+
+                    productos = []
+                    
+                    for producto_data in productos_data:
+                        codigo = producto_data['codigo']
+
+                        cursor.execute('SELECT categoria FROM productoelectronico WHERE codigo = %s', (codigo,))
+                        categoria = cursor.fetchone()
+
+                        if categoria:
+                            producto_data['categoria'] = categoria['categoria']
+                            producto = ProductoElectronico(**producto_data)
+                        else:
+                            cursor.execute('SELECT vencimiento FROM productoalimenticio WHERE codigo = %s', (codigo,))
+                            vencimiento = cursor.fetchone()
+                            producto_data['vencimiento'] = vencimiento['vencimiento']
+                            producto = ProductoAlimenticio(**producto_data)
+
+                        productos.append(producto)
+
+        except Exception as e:
+            print(f'Error al mostrar todos los productos: {e}')
+        else:
+            return productos
+        finally:
+            if connection.is_connected():
+                connection.close()
