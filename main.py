@@ -33,7 +33,7 @@ def agregar_producto(gestion: GestionProductos, tipo_producto):
     y los datos del producto
     '''
     try:
-        codigo = int(input('Ingrese el codigo: '))
+        codigo = input('Ingrese el codigo: ')
         nombre = input('Ingrese el nombre: ')
         costo = float(input('Ingrese el costo: '))
         precio = float(input('Ingrese el precio: '))
@@ -81,17 +81,22 @@ def eliminar_producto_por_codigo(gestion: GestionProductos):
 
 def mostrar_todos_los_productos(gestion: GestionProductos):
     print('=== Listado completo de productos ===')
-    for producto in gestion.leer_datos().values():
-        if 'categoria' in producto:
-            print(f"{producto['nombre']} - Categoria: {producto['categoria']}")
-        else:
-            print(f"{producto['nombre']} - Vencimiento: {producto['vencimiento']}")
+    
+    try:
+        productos = gestion.leer_todos_los_productos()
+        for producto in productos:
+            if isinstance(producto, ProductoElectronico):
+                print(f'{producto.codigo} {producto.nombre} {producto.precio}')
+            elif isinstance(producto, ProductoAlimenticio):
+                print(f'{producto.codigo} {producto.nombre} {producto.precio}')
+    except Exception as e:
+        print(f'Error al mostrar todos los productos {e}')
+        
     print('=== /// === /// ===')
     input('Presione una tecla para continuar')
 
 if __name__ == '__main__':
-    archivo_productos = 'productos_db.json'
-    gestion_productos = GestionProductos(archivo_productos) # Instancia de la clase que implementa el CRUD (la búsqueda en JSON)
+    gestion_productos = GestionProductos() ### Instancia de la clase que implementa el CRUD
 
     while True:
         limpiar_pantalla()
