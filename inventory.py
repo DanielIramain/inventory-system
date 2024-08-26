@@ -68,11 +68,9 @@ class Producto():
         self.__cantidad = self.validar_cantidad(nueva_cantidad)
 
     def validar_codigo(self, codigo):
-        try:
+        try: 
             nuevo_codigo = int(codigo)
-            if nuevo_codigo == '':
-                raise ValueError('El código del producto no puede estar vacío')
-            
+                        
             return nuevo_codigo
         except ValueError:
             print('El código debe ser un número entero')
