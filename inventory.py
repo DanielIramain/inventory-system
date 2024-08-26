@@ -198,30 +198,7 @@ class GestionProductos():
         except Error as e:
             print(f'Error al conectarse a la base de datos: {e}')
             return None
-###
-    def leer_datos(self):
-        '''
-        Trae los datos del JSON
-        '''
-        try:
-            with open(self.archivo, 'r') as file:
-                data = json.load(file)
-        except FileNotFoundError:
-            return {}
-        except Exception as e:
-            raise Exception(f'Error al leer datos del archivo: {e}')
-        else:
-            return data
-        
-    def guardar_datos(self, data):
-        try:
-            with open(self.archivo, 'w') as file:
-                json.dump(data, file, indent=4)
-        except IOError as e:
-            print(f'Error al intentar guardar los datos en {self.archivo} - error: {e}')
-        except Exception as e:
-            print(f'Error inesperado: {e}')
-###    
+
     def crear_producto(self, producto):
         '''
         Este método va a recibir una instancia de Producto cuando llamemos desde main.py. Es decir, recibirá un input del usuario
