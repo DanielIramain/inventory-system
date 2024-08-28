@@ -63,7 +63,13 @@ def agregar_producto(gestion: GestionProductos, tipo_producto):
     
 def buscar_producto_por_codigo(gestion: GestionProductos):
     codigo = input('Ingrese el codigo del producto a buscar: ')
-    gestion.leer_producto(codigo)
+    producto = gestion.leer_producto(codigo)
+    if isinstance(producto, ProductoElectronico):
+        print(producto)
+    elif isinstance(producto, ProductoAlimenticio):
+        print(producto)
+    else:
+        print(f'No se encontró producto con el código {codigo}')
     input('Presione una tecla para continuar...')
 
 def actualizar_producto_por_codigo(gestion: GestionProductos):
