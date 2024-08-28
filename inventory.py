@@ -273,13 +273,12 @@ class GestionProductos():
                                 producto = ProductoAlimenticio(**datos_producto)
                             else: ### Caso (hipotetico) donde no es electronico ni alimenticio
                                 producto = Producto(**datos_producto)
-
-                        print(f'Producto encontrado: {producto.nombre}')
-
                     else:
-                        print(f'No se encontró ningún producto con el código ingresado')
+                        producto = None
         except Error as e:
             print(f'Error al leer producto: {e}')
+        else:
+            return producto
         finally:
             if connection.is_connected():
                 connection.close()
