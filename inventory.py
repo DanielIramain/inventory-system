@@ -292,8 +292,8 @@ class GestionProductos():
             if connection:
                 with connection.cursor() as cursor:
                     ## Verificar si existe el código
-                    cursor.execute('SELECT * FROM producto WHERE codigo = %s', (codigo,))
-                    if not cursor.fetchone():
+                    producto = self.leer_producto(codigo)
+                    if producto == None:
                         print(f'Producto de código {codigo} inexistente')
                         return
                     
