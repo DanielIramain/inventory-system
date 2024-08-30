@@ -63,28 +63,40 @@ def agregar_producto(gestion: GestionProductos, tipo_producto):
         print(f'Error inesperado: {e}')
     
 def buscar_producto_por_codigo(gestion: GestionProductos):
-    codigo = input('Ingrese el codigo del producto a buscar: ')
-    producto = gestion.leer_producto(codigo)
-    if isinstance(producto, ProductoElectronico):
-        print(producto)
-    elif isinstance(producto, ProductoAlimenticio):
-        print(producto)
-    else:
-        print(f'No se encontró producto con el código {codigo}')
-    input('Presione una tecla para continuar...')
+    try:
+        codigo = int(input('Ingrese el codigo del producto a buscar: '))
+        producto = gestion.leer_producto(codigo)
+        if isinstance(producto, ProductoElectronico):
+            print(producto)
+        elif isinstance(producto, ProductoAlimenticio):
+            print(producto)
+        else:
+            print(f'No se encontró producto con el código {codigo}')
+        input('Presione una tecla para continuar...')
+    except ValueError as e:
+        print(f'Tipo de dato equivocado: {e}')
+        input('Presione una tecla para continuar...')
 
 def actualizar_producto_por_codigo(gestion: GestionProductos):
-    codigo = input('Ingrese el código del producto a actualizar: ')
-    costo = float(input('Ingrese el nuevo costo del producto: '))
-    precio = float(input('Ingrese el nuevo precio del producto: '))
-    cantidad = int(input('Ingrese la nueva cantidad del producto: '))
-    gestion.actualizar_producto(codigo, costo, precio, cantidad)
-    input('Presione una tecla para continuar...')
+    try:
+        codigo = int(input('Ingrese el código del producto a actualizar: '))
+        costo = float(input('Ingrese el nuevo costo del producto: '))
+        precio = float(input('Ingrese el nuevo precio del producto: '))
+        cantidad = int(input('Ingrese la nueva cantidad del producto: '))
+        gestion.actualizar_producto(codigo, costo, precio, cantidad)
+        input('Presione una tecla para continuar...')
+    except ValueError as e:
+        print(f'Tipo de dato equivocado: {e}')
+        input('Presione una tecla para continuar...')
 
 def eliminar_producto_por_codigo(gestion: GestionProductos):
-    codigo = input('Ingrese el codigo del producto a eliminar: ')
-    gestion.eliminar_producto(codigo)
-    input('Presione una tecla para continuar...')
+    try:
+        codigo = int(input('Ingrese el codigo del producto a eliminar: '))
+        gestion.eliminar_producto(codigo)
+        input('Presione una tecla para continuar...')
+    except ValueError as e:
+        print(f'Error al eliminar por código incorrecto: {e}')
+        input('Presione una tecla para continuar...')
 
 def mostrar_todos_los_productos(gestion: GestionProductos):
     print('=== Listado completo de productos ===')
@@ -103,17 +115,20 @@ def mostrar_todos_los_productos(gestion: GestionProductos):
     input('Presione una tecla para continuar')
 
 def eliminar_todos_los_productos(gestion: GestionProductos):
-    print('ATENCIÓN: Está a punto de eliminar todos los productos de la BD ¿Seguro desea continuar?')
-    print('Esta opción NO se puede deshacer')
-    opcion = input('Si/No: ').lower()
-    if opcion == 'si':
-        gestion.eliminar_registros()
-        input('Presione una tecla para continuar...')
-    elif opcion == 'no':
-        return
-    else:
-        print('Opción incorrecta. Intente nuevamente')
-        input('Presione una tecla para continuar...')
+    try:
+        print('ATENCIÓN: Está a punto de eliminar todos los productos de la BD ¿Seguro desea continuar?')
+        print('Esta opción NO se puede deshacer')
+        opcion = input('Si/No: ').lower()
+        if opcion == 'si':
+            gestion.eliminar_registros()
+            input('Presione una tecla para continuar...')
+        elif opcion == 'no':
+            return
+        else:
+            print('Opción incorrecta. Intente nuevamente')
+            input('Presione una tecla para continuar...')
+    except Exception as e:
+        print(f'Ocurrió un error al intentar eliminar los registros: {e}')
 
 if __name__ == '__main__':
     gestion_productos = GestionProductos() ### Instancia de la clase que implementa el CRUD
