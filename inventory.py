@@ -378,3 +378,22 @@ class GestionProductos():
         finally:
             if connection.is_connected():
                 connection.close()
+
+    def eliminar_registros(self):
+        try:
+            connection = self.connect()
+            if connection:
+                with connection.cursor() as cursor:
+                    cursor.execute('DELETE FROM productoelectronico')
+                    cursor.execute('DELETE FROM productoalimenticio')
+                    cursor.execute('DELETE FROM producto')
+                    
+                    if cursor.rowcount > 0: ### Mayor a cero porque todavía no fueron guardados los cambios
+                        connection.commit()
+                        print('Todos los productos fueron eliminados exitosamente')
+        except Exception as e:
+            print(f'Ocurrió un error al eliminar todos los productos: {e}')
+            input('Presione una tecla para continuar...')
+        finally:
+            if connection.is_connected():
+                connection.close()

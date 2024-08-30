@@ -25,7 +25,8 @@ def mostrar_menu():
     print('4. Actualizar producto')
     print('5. Eliminar producto')
     print('6. Mostrar todos los productos')
-    print('7. Salir')
+    print('7. Eliminar todos los productos')
+    print('8. Salir')
 
 def agregar_producto(gestion: GestionProductos, tipo_producto):
     '''
@@ -101,6 +102,19 @@ def mostrar_todos_los_productos(gestion: GestionProductos):
     print('=== /// === /// ===')
     input('Presione una tecla para continuar')
 
+def eliminar_todos_los_productos(gestion: GestionProductos):
+    print('ATENCIÓN: Está a punto de eliminar todos los productos de la BD ¿Seguro desea continuar?')
+    print('Esta opción NO se puede deshacer')
+    opcion = input('Si/No: ').lower()
+    if opcion == 'si':
+        gestion.eliminar_registros()
+        input('Presione una tecla para continuar...')
+    elif opcion == 'no':
+        return
+    else:
+        print('Opción incorrecta. Intente nuevamente')
+        input('Presione una tecla para continuar...')
+
 if __name__ == '__main__':
     gestion_productos = GestionProductos() ### Instancia de la clase que implementa el CRUD
 
@@ -120,7 +134,9 @@ if __name__ == '__main__':
         if opcion == '6':
             mostrar_todos_los_productos(gestion_productos)
         if opcion == '7':
+            eliminar_todos_los_productos(gestion_productos)
+        if opcion == '8':
             print('Saliendo del programa...')
             break
         else:
-            print('Opcion no válida. Seleccione una opción válida (1-7)')
+            print('Opcion no válida. Seleccione una opción válida (1-8)')
