@@ -10,8 +10,6 @@ Objetivo: Desarrollar un sistema para manejar productos en un inventario.
 5. Persistir los datos en archivo JSON.
 '''
 # Librerías necesarias
-import json
-
 import mysql.connector
 from mysql.connector import Error
 from decouple import config
