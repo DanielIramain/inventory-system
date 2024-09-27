@@ -7,11 +7,9 @@ Objetivo: Desarrollar un sistema para manejar productos en un inventario.
 2. Definir al menos 2 clases derivadas para diferentes categorías de productos (por ejemplo, ProductoElectronico, ProductoAlimenticio) con atributos y métodos específicos.
 3. Implementar operaciones CRUD para gestionar productos del inventario.
 4. Manejar errores con bloques try-except para validar entradas y gestionar excepciones.
-5. Persistir los datos en archivo JSON.
+5. Persistir los datos en SQL.
 '''
 # Librerías necesarias
-import json
-
 import mysql.connector
 from mysql.connector import Error
 from decouple import config
@@ -116,18 +114,6 @@ class Producto():
             return cantidad_num
         except ValueError:
             print('La cantidad debe ser un número entero')
-    
-    def to_dict(self):
-        '''
-        método para devolver un dicc porque vamos a trasladarlo a JSON
-        '''
-        return {
-            'codigo': self.codigo,
-            'nombre': self.nombre,
-            'costo': self.costo,
-            'precio': self.precio,
-            'cantidad': self.cantidad
-        }
 
     def __str__(self) -> str:
         return f'{self.codigo} {self.nombre}'
@@ -143,12 +129,6 @@ class ProductoElectronico(Producto):
     def categoria(self):
         return self.__categoria
     
-    def to_dict(self):
-        data = super().to_dict()
-        data['categoria'] = self.categoria
-        
-        return data
-    
     def __str__(self) -> str:
         return f'{super().__str__()} - categoria: {self.categoria}'
     
@@ -161,13 +141,7 @@ class ProductoAlimenticio(Producto):
     @property
     def vencimiento(self):
         return self.__vencimiento
-        
-    def to_dict(self):
-        data = super().to_dict()
-        data['vencimiento'] = self.vencimiento
-        
-        return data
-    
+            
     def __str__(self) -> str:
         return f'{super().__str__()} - vencimiento: {self.vencimiento}'
 
